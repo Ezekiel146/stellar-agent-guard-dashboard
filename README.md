@@ -119,7 +119,7 @@ npm run inspect      # read-only dump of an instance's state
 
 ### Screens
 
-- **`/` (Console Overview)**: Displays connected wallet, active guard address, current balance, policy parameters summary, dead-man switch countdown, live telemetry event stream, transaction history, multisig approvals, an unsigned-XDR submit panel, and the emergency panic button.
+- **`/` (Console Overview)**: Displays connected wallet, the active guard (chosen from the per-network saved-guard switcher), current balance, policy parameters summary, dead-man switch countdown, live telemetry event stream, transaction history, multisig approvals, an unsigned-XDR submit panel, and the emergency panic button.
 - **`/configure` (Policy Configurator & Deployment)**:
   - Deploy fresh guard accounts from verified on-chain WASM bytecode.
   - Configure spending policy parameters with real-time validation.
@@ -136,7 +136,7 @@ npm run inspect      # read-only dump of an instance's state
   - Re-reads contract `status()` to verify `admin_frozen = true`.
   - Provides wallet-signed `unfreeze()` to restore normal operations.
 - **`TelemetryFeed`**: Cursor-based polling of `event_auth_checked` topics from Soroban RPC, decoding contract outcomes and reason codes.
-- **`WalletBar`**: Wallet connection status, address, network validation, and the Freighter / Albedo / xBull connector picker.
+- **`WalletBar`**: Wallet connection status, address, network validation, the Freighter / Albedo / xBull connector picker, and the multi-guard switcher (saved per network, add-by-address verified with a live `status()` read, rename, and confirm-gated delete).
 - **`FleetTable`**: Live per-instance status across every registered guard account.
 - **`TxHistoryTable`** / **`MultisigTracker`**: The locally recorded submission history and pending multisig approvals.
 - **`SubmitSignedXDRPanel`**: Imports and broadcasts an externally signed transaction envelope for multisig or air-gapped signing.
