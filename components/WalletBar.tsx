@@ -131,9 +131,17 @@ export function WalletBar() {
             />
             <button
               className="secondary"
-              onClick={() => void addByAddress()}
-              disabled={adding || demo}
-              title={demo ? "Demo mode pins a single static fixture." : "Validate the address and read its status() before saving."}
+              onClick={() => {
+                const candidate = newAddress.trim();
+                if (!looksLikeContractAddress(candidate)) {
+                  setAddError(
+                    "That is not a Soroban contract address (52 characters, starting with C).",
+                  );
+                  return;
+                }
+                addInstance(candidate, `Guard ${short(candidate, 6, 4)}`);
+                setNewAddress("");
+              }}
             >
               {adding ? "Checking…" : "Add"}
             </button>
@@ -166,7 +174,11 @@ export function WalletBar() {
                 <span className="pill ok">connected</span>
                 {provider && <span className="pill">{provider.name}</span>}
                 <AddressText address={wallet.address} />
-                <button className="secondary" onClick={() => setPickerOpen(true)} disabled={connecting}>
+                <button
+                  className="secondary"
+                  onClick={() => setPickerOpen(true)}
+                  disabled={connecting}
+                >
                   Change wallet
                 </button>
                 <button className="secondary" onClick={disconnect}>
