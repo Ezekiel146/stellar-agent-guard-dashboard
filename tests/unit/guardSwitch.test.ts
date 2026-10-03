@@ -15,6 +15,8 @@ import { afterEach, before, test } from "node:test";
 import { Address, xdr } from "@stellar/stellar-sdk";
 import type { rpc } from "@stellar/stellar-sdk";
 import type { ReactElement, ReactNode } from "react";
+import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { PathnameContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
 import { installDom, loadReact, sleep, type Act } from "./domHarness.ts";
 import { GuardProvider, useGuard } from "../../components/GuardProvider.tsx";
 import { KNOWN_INSTANCES, instanceStorageKey } from "../../lib/guard/instance.ts";
@@ -169,7 +171,23 @@ async function render(
   let root: ReturnType<typeof createRoot> | undefined;
   await act(async () => {
     root = createRoot(container);
-    root.render(node);
+    root.render(
+      react.createElement(
+        AppRouterContext.Provider,
+        {
+          value: {
+            back: () => {},
+            forward: () => {},
+            refresh: () => {},
+            hmrRefresh: () => {},
+            push: () => {},
+            replace: () => {},
+            prefetch: async () => {},
+          } as never,
+        },
+        react.createElement(PathnameContext.Provider, { value: "/" }, node),
+      ),
+    );
   });
   return {
     container,
