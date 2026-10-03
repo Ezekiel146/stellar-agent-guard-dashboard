@@ -46,6 +46,7 @@ before(async () => {
 
 afterEach(() => {
   window.localStorage.clear();
+  window.history.replaceState(null, "", "/");
 });
 
 interface FakeServer {
