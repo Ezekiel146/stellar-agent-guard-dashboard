@@ -53,6 +53,7 @@ import {
   writeUrlState,
 } from "../lib/guard/urlState.ts";
 import { announce } from "../lib/guard/useAnnounce.ts";
+import { clearGuardScopedState } from "../lib/guard/guardScoped.ts";
 import {
   KNOWN_INSTANCES,
   defaultGuard,
@@ -61,6 +62,7 @@ import {
   renameInstance as renameSavedInstance,
   type GuardInstance,
 } from "../lib/guard/instance.ts";
+import { addGuard } from "../lib/guard/registry.ts";
 import { readStatus, readPolicy, readWindow, verifyWasmIdentity } from "../lib/guard/chain.ts";
 import { currentAddress, freighterSigner, type ConnectedWallet } from "../lib/guard/wallet.ts";
 import {
@@ -391,6 +393,8 @@ export function GuardProvider({
             {
               guard: requested.guard,
               label: `Guard ${requested.guard.slice(0, 6)}…${requested.guard.slice(-4)}`,
+              network: NETWORK.name,
+              addedAt: new Date().toISOString(),
               provenance: "Opened from a link in this browser.",
             },
           ]
@@ -954,16 +958,6 @@ export function GuardProvider({
     }
 
     let cancelled = false;
-    // Rebuild the feed when the active guard changed: the cursor inside a
-    // `GuardFeed` belongs to one stream, so polling guard B through guard A's
-    // cursor would either replay A's events or skip B's. Recreating resets the
-    // cursor to B's own first ledger.
-    const runnerFor = (): GuardFeed => {
-      if (!feedRef.current || feedRef.current.guard !== guard) {
-        feedRef.current = new GuardFeed(server, guard);
-      }
-      return feedRef.current;
-    };
     const tick = async () => {
       // Identity-check on every tick: if the operator switched guards, the
       // coordinator has already swapped the feed; this poll belongs to the
