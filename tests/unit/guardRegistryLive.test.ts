@@ -87,9 +87,16 @@ describe("addGuard live verification", () => {
     assert.equal(result.ok, false);
     if (result.ok) return;
     assert.equal(result.kind, "invalid");
-    assert.equal(mock.callCount("simulateTransaction"), 0, "an invalid string is not put on the wire");
+    assert.equal(
+      mock.callCount("simulateTransaction"),
+      0,
+      "an invalid string is not put on the wire",
+    );
     assert.equal(mock.callCount("sendTransaction"), 0);
-    assert.equal(loadInstances({ storage }).some((instance) => instance.guard === "not-a-contract"), false);
+    assert.equal(
+      loadInstances({ storage }).some((instance) => instance.guard === "not-a-contract"),
+      false,
+    );
   });
 
   it("rejects a regex-shaped but bad-checksum StrKey with no RPC call", async () => {
@@ -114,7 +121,10 @@ describe("addGuard live verification", () => {
     assert.equal(result.kind, "unreachable");
     assert.equal(mock.callCount("simulateTransaction"), 1, "it did try to read status()");
     assert.equal(mock.callCount("sendTransaction"), 0);
-    assert.equal(loadInstances({ storage }).some((instance) => instance.guard === LIVE), false);
+    assert.equal(
+      loadInstances({ storage }).some((instance) => instance.guard === LIVE),
+      false,
+    );
   });
 
   it("refuses a transport failure rather than trusting an unreachable guard", async () => {
@@ -126,7 +136,10 @@ describe("addGuard live verification", () => {
     if (result.ok) return;
     assert.equal(result.kind, "unreachable");
     assert.equal(mock.callCount("sendTransaction"), 0);
-    assert.equal(loadInstances({ storage }).some((instance) => instance.guard === LIVE), false);
+    assert.equal(
+      loadInstances({ storage }).some((instance) => instance.guard === LIVE),
+      false,
+    );
   });
 
   it("refuses a contract that answers but not in the guard's shape", async () => {

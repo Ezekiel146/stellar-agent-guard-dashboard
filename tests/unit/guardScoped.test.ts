@@ -23,7 +23,9 @@ import type { StorageLike } from "../../lib/guard/instance.ts";
 const GUARD_A = "CAYJZT4XH5SWDXNR7MZJCCUBIDAT2KZDDUTZ7OZQEMKCPJGD4P3X4CU7";
 const GUARD_B = "CAPADGEK457RHKN4RYVUMDJTFHDSG7R5HREQONKLYK7MFKC5WFENPP44";
 
-function memoryStorage(initial: Record<string, string> = {}): StorageLike & { dump(): Record<string, string> } {
+function memoryStorage(
+  initial: Record<string, string> = {},
+): StorageLike & { dump(): Record<string, string> } {
   const data = new Map(Object.entries(initial));
   return {
     getItem: (key) => (data.has(key) ? (data.get(key) as string) : null),
@@ -57,7 +59,9 @@ describe("round-trip and corruption", () => {
   });
 
   it("returns null for a corrupt payload rather than throwing", () => {
-    const storage = memoryStorage({ [scopedStorageKey("feedFilter", "testnet", GUARD_A)]: "{nope" });
+    const storage = memoryStorage({
+      [scopedStorageKey("feedFilter", "testnet", GUARD_A)]: "{nope",
+    });
     assert.equal(loadScopedValue("feedFilter", "testnet", GUARD_A, { storage }), null);
   });
 
@@ -99,7 +103,11 @@ describe("the delete cascade", () => {
 
     for (const base of SCOPED_STORAGE_BASES) {
       assert.equal(loadScopedValue(base, "testnet", GUARD_A, { storage }), null, `${base} cleared`);
-      assert.equal(loadScopedValue(base, "testnet", GUARD_B, { storage }), `${base}-B`, `${base} kept`);
+      assert.equal(
+        loadScopedValue(base, "testnet", GUARD_B, { storage }),
+        `${base}-B`,
+        `${base} kept`,
+      );
       assert.equal(
         loadScopedValue(base, "mainnet", GUARD_A, { storage }),
         `${base}-mainnet`,

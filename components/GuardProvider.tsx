@@ -242,10 +242,7 @@ export function GuardProvider({
    */
   server?: rpc.Server;
 }) {
-  const server = useMemo(
-    () => serverOverride ?? createServer(NETWORK.rpcUrl),
-    [serverOverride],
-  );
+  const server = useMemo(() => serverOverride ?? createServer(NETWORK.rpcUrl), [serverOverride]);
   // The cross-tab coordinator. It is transport-agnostic (BroadcastChannel with a
   // localStorage fallback) and inert where neither exists, so the provider never
   // branches on availability. Created once per tab.

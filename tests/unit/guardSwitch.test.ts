@@ -135,7 +135,11 @@ function Probe({ guards = [], remove }: { guards?: string[]; remove?: string }):
     react.createElement("span", { "data-testid": "guard" }, guard),
     react.createElement("span", { "data-testid": "status" }, status),
     react.createElement("span", { "data-testid": "count" }, String(instances.length)),
-    react.createElement("span", { "data-testid": "active-network" }, activeInstance?.network ?? "none"),
+    react.createElement(
+      "span",
+      { "data-testid": "active-network" },
+      activeInstance?.network ?? "none",
+    ),
     ...guards.map((target, index) =>
       react.createElement(
         "button",
@@ -157,7 +161,9 @@ function text(container: HTMLElement, testid: string): string {
   return container.querySelector(`[data-testid="${testid}"]`)?.textContent ?? "";
 }
 
-async function render(node: ReactNode): Promise<{ container: HTMLElement; unmount: () => Promise<void> }> {
+async function render(
+  node: ReactNode,
+): Promise<{ container: HTMLElement; unmount: () => Promise<void> }> {
   const container = document.createElement("div");
   document.body.appendChild(container);
   let root: ReturnType<typeof createRoot> | undefined;
@@ -258,16 +264,26 @@ test("deleting a saved guard clears the state scoped to it and keeps other guard
     await click(rendered.container, "remove");
     await settle();
 
-    assert.equal(window.localStorage.getItem(savedFilterKey), null, "the deleted guard's state is gone");
+    assert.equal(
+      window.localStorage.getItem(savedFilterKey),
+      null,
+      "the deleted guard's state is gone",
+    );
     assert.equal(
       window.localStorage.getItem(otherFilterKey),
       JSON.stringify({ contract: "other" }),
       "another guard's state is untouched",
     );
-    const persisted = JSON.parse(window.localStorage.getItem(instanceStorageKey("testnet")) ?? "[]") as Array<{
+    const persisted = JSON.parse(
+      window.localStorage.getItem(instanceStorageKey("testnet")) ?? "[]",
+    ) as Array<{
       guard: string;
     }>;
-    assert.equal(persisted.some((entry) => entry.guard === SAVED), false, "removed from the saved list");
+    assert.equal(
+      persisted.some((entry) => entry.guard === SAVED),
+      false,
+      "removed from the saved list",
+    );
     assert.equal(Number(text(rendered.container, "count")), before - 1);
   } finally {
     await rendered.unmount();

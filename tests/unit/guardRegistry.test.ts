@@ -89,7 +89,10 @@ describe("loading and defaults", () => {
     assert.equal(added.label, "Good");
     const other = loaded.find((instance) => instance.guard === OTHER)!;
     assert.equal(other.label, defaultGuardLabel(OTHER));
-    assert.equal(loaded.some((instance) => instance.guard === "not-an-address"), false);
+    assert.equal(
+      loaded.some((instance) => instance.guard === "not-an-address"),
+      false,
+    );
   });
 
   it("caps the saved list at INSTANCE_LIMIT", () => {
@@ -116,14 +119,21 @@ describe("adding and remembering", () => {
     assert.match(entry.addedAt, /^\d{4}-\d{2}-\d{2}T/);
     const raw = storage.dump()[instanceStorageKey("testnet")];
     assert.ok(raw, "written under the namespaced key");
-    assert.equal(storage.dump()[instanceStorageKey("mainnet")], undefined, "not written to another network");
+    assert.equal(
+      storage.dump()[instanceStorageKey("mainnet")],
+      undefined,
+      "not written to another network",
+    );
   });
 
   it("namespaces per network: a Testnet guard never appears in the Mainnet list", () => {
     const storage = memoryStorage();
     rememberForTest(ADDED, "Testnet guard", "testnet", storage);
     const mainnet = loadInstances({ network: "mainnet", storage });
-    assert.equal(mainnet.some((instance) => instance.guard === ADDED), false);
+    assert.equal(
+      mainnet.some((instance) => instance.guard === ADDED),
+      false,
+    );
     assert.equal(instanceStorageKey("mainnet"), `${INSTANCE_STORAGE_PREFIX}.mainnet`);
   });
 
@@ -166,15 +176,27 @@ describe("rename and delete", () => {
     rememberForTest(ADDED, "A", "testnet", storage);
     rememberForTest(OTHER, "B", "testnet", storage);
     const after = removeInstance(ADDED, { storage });
-    assert.equal(after.some((instance) => instance.guard === ADDED), false);
-    assert.equal(after.some((instance) => instance.guard === OTHER), true);
-    assert.equal(after.filter((instance) => isKnownInstance(instance.guard)).length, KNOWN_INSTANCES.length);
+    assert.equal(
+      after.some((instance) => instance.guard === ADDED),
+      false,
+    );
+    assert.equal(
+      after.some((instance) => instance.guard === OTHER),
+      true,
+    );
+    assert.equal(
+      after.filter((instance) => isKnownInstance(instance.guard)).length,
+      KNOWN_INSTANCES.length,
+    );
   });
 
   it("cannot delete a build-seeded instance", () => {
     const storage = memoryStorage();
     const after = removeInstance(PHASE1, { storage });
-    assert.equal(after.some((instance) => instance.guard === PHASE1), true);
+    assert.equal(
+      after.some((instance) => instance.guard === PHASE1),
+      true,
+    );
   });
 });
 
@@ -198,7 +220,11 @@ describe("v1 → v2 migration", () => {
       [LEGACY_INSTANCE_STORAGE_KEY]: JSON.stringify([{ guard: ADDED, label: "Legacy" }]),
     });
     const loaded = loadInstances({ storage });
-    assert.equal(loaded.some((instance) => instance.guard === ADDED), false, "no re-seed");
+    assert.equal(
+      loaded.some((instance) => instance.guard === ADDED),
+      false,
+      "no re-seed",
+    );
     assert.ok(storage.dump()[LEGACY_INSTANCE_STORAGE_KEY], "legacy key is left alone");
   });
 
@@ -207,10 +233,16 @@ describe("v1 → v2 migration", () => {
       [LEGACY_INSTANCE_STORAGE_KEY]: JSON.stringify([{ guard: ADDED, label: "Legacy" }]),
     });
     const mainnet = loadInstances({ network: "mainnet", storage });
-    assert.equal(mainnet.some((instance) => instance.guard === ADDED), false);
+    assert.equal(
+      mainnet.some((instance) => instance.guard === ADDED),
+      false,
+    );
     // The migration is not consumed: Testnet's first load can still adopt it.
     const testnet = loadInstances({ network: "testnet", storage });
-    assert.equal(testnet.some((instance) => instance.guard === ADDED), true);
+    assert.equal(
+      testnet.some((instance) => instance.guard === ADDED),
+      true,
+    );
   });
 });
 

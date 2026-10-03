@@ -391,8 +391,9 @@ export function DeleteGuardModal({
         <strong id="delete-guard-title">Delete this saved guard?</strong>
         <p className="tiny">
           Removes <strong>{instance.label}</strong> (
-          <span className="mono">{short(instance.guard, 10, 6)}</span>) from this browser&apos;s list
-          and clears the drafts and filters saved for it. It does not touch the contract on chain.
+          <span className="mono">{short(instance.guard, 10, 6)}</span>) from this browser&apos;s
+          list and clears the drafts and filters saved for it. It does not touch the contract on
+          chain.
         </p>
         <div className="row">
           <button className="danger" onClick={onConfirm}>

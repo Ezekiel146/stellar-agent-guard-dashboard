@@ -132,7 +132,10 @@ function asInstance(value: unknown, network: string, now: () => string): GuardIn
   if (typeof entry.guard !== "string" || !looksLikeContractAddress(entry.guard)) return null;
   return {
     guard: entry.guard,
-    label: typeof entry.label === "string" && entry.label.trim() !== "" ? entry.label : defaultGuardLabel(entry.guard),
+    label:
+      typeof entry.label === "string" && entry.label.trim() !== ""
+        ? entry.label
+        : defaultGuardLabel(entry.guard),
     // A v1 entry has no network; it belongs to the network this build runs on.
     network: typeof entry.network === "string" && entry.network !== "" ? entry.network : network,
     addedAt: typeof entry.addedAt === "string" && entry.addedAt !== "" ? entry.addedAt : now(),
@@ -176,7 +179,11 @@ function readNamespaced(network: string, storage: StorageLike | null): GuardInst
   }
 }
 
-function writeNamespaced(network: string, storage: StorageLike | null, instances: GuardInstance[]): void {
+function writeNamespaced(
+  network: string,
+  storage: StorageLike | null,
+  instances: GuardInstance[],
+): void {
   if (!storage) return;
   try {
     storage.setItem(instanceStorageKey(network), JSON.stringify(instances));
@@ -235,7 +242,11 @@ export function loadInstances(options?: InstanceLoadOptions): GuardInstance[] {
 }
 
 /** The operator-saved entries only (no known instances), for writes. */
-function loadSaved(options?: InstanceLoadOptions): { network: string; storage: StorageLike | null; saved: GuardInstance[] } {
+function loadSaved(options?: InstanceLoadOptions): {
+  network: string;
+  storage: StorageLike | null;
+  saved: GuardInstance[];
+} {
   const { network, storage } = resolve(options);
   return { network, storage, saved: readStored(network, storage) };
 }
@@ -246,7 +257,11 @@ function loadSaved(options?: InstanceLoadOptions): { network: string; storage: S
  * Returns the combined list (known + saved) that resulted, so the caller can set
  * state from the single source of truth without a second read.
  */
-export function rememberInstance(guard: string, label: string, options?: InstanceLoadOptions): GuardInstance[] {
+export function rememberInstance(
+  guard: string,
+  label: string,
+  options?: InstanceLoadOptions,
+): GuardInstance[] {
   const trimmed = guard.trim();
   const { network, storage, saved } = loadSaved(options);
   if (KNOWN_INSTANCES.some((instance) => instance.guard === trimmed)) {
@@ -276,7 +291,11 @@ export function rememberInstance(guard: string, label: string, options?: Instanc
  * writes a saved shadow that takes precedence on load; removing that shadow would
  * restore the build's own label. A blank label is ignored rather than wiping it.
  */
-export function renameInstance(guard: string, label: string, options?: InstanceLoadOptions): GuardInstance[] {
+export function renameInstance(
+  guard: string,
+  label: string,
+  options?: InstanceLoadOptions,
+): GuardInstance[] {
   const trimmed = guard.trim();
   const nextLabel = label.trim();
   const { network, storage, saved } = loadSaved(options);

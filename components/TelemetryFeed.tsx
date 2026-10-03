@@ -106,9 +106,7 @@ export function TelemetryFeed() {
       loadScopedValue<TelemetryFilter>(SCOPED_FILTER_BASE, NETWORK.name, guard) ??
       EMPTY_TELEMETRY_FILTER;
     const shared =
-      typeof window === "undefined"
-        ? undefined
-        : decodeUrlState(window.location.search).filter;
+      typeof window === "undefined" ? undefined : decodeUrlState(window.location.search).filter;
     return {
       [guard]: shared === undefined ? saved : { ...saved, verdict: shared },
     };
@@ -282,7 +280,10 @@ export function TelemetryFeed() {
             aria-label="Verdict filter"
             value={filter.verdict}
             onChange={(event) =>
-              applyFilter((current) => ({ ...current, verdict: event.target.value as VerdictFilter }))
+              applyFilter((current) => ({
+                ...current,
+                verdict: event.target.value as VerdictFilter,
+              }))
             }
           >
             <option value="all">All verdicts</option>

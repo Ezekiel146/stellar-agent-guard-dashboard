@@ -91,8 +91,7 @@ export interface AddGuardParams {
 }
 
 export type AddGuardResult =
-  | { ok: true; instance: GuardInstance }
-  | { ok: false; kind: AddGuardKind; error: string };
+  { ok: true; instance: GuardInstance } | { ok: false; kind: AddGuardKind; error: string };
 
 /**
  * Validate and live-verify an address, then save it under the active network.
@@ -117,7 +116,11 @@ export async function addGuard(params: AddGuardParams): Promise<AddGuardResult> 
   });
   const instance = instances.find((candidate) => candidate.guard === address);
   if (!instance) {
-    return { ok: false, kind: "unreachable", error: "the guard passed its live check but could not be saved." };
+    return {
+      ok: false,
+      kind: "unreachable",
+      error: "the guard passed its live check but could not be saved.",
+    };
   }
   return { ok: true, instance };
 }
